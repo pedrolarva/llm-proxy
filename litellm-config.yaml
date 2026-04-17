@@ -1,12 +1,17 @@
 model_list:
-  - model_name: "gemini-3.1-flash"
+  - model_name: "gemini-enterprise"
     litellm_params:
       model: gemini/gemini-2.0-flash
       api_key: os.environ/GEMINI_API_KEY
-  - model_name: "*"
+      rpm: 10 # Rate limit per provider
+  - model_name: "gemini-enterprise"
     litellm_params:
-      model: gemini/gemini-2.0-flash
+      model: gemini/gemini-1.5-pro
       api_key: os.environ/GEMINI_API_KEY
+
+router_settings:
+  routing_strategy: "latency-based-routing" # Kong-like smart routing
+  set_verbose: true
 
 litellm_settings:
   drop_params: true

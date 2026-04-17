@@ -8,10 +8,10 @@ services:
       - ./custom_callbacks.py:/app/custom_callbacks.py
     command: ["--config", "/app/config.yaml", "--port", "4000"]
     environment:
-      - DATABASE_URL=postgresql://user:password@postgres:5432/litellm
+      - DATABASE_URL=postgresql://user:litellm123@postgres:5432/litellm
       - REDIS_HOST=redis
       - REDIS_PORT=6379
-      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - GEMINI_API_KEY=${GEMINI_API_KEY:-mock-key}
       - LITELLM_MASTER_KEY=${LITELLM_MASTER_KEY:-sk-master-token}
       - PRESIDIO_URL=http://presidio-analyzer:3000/analyze
       - PRESIDIO_ANONYMIZER_URL=http://presidio-anonymizer:3000/anonymize
@@ -38,7 +38,7 @@ services:
     image: postgres:15-alpine
     environment:
       - POSTGRES_USER=user
-      - POSTGRES_PASSWORD=password
+      - POSTGRES_PASSWORD=litellm123
       - POSTGRES_DB=litellm
     ports:
       - "5432:5432"

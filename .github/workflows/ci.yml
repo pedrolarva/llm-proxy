@@ -16,18 +16,19 @@ jobs:
         run: |
           echo "LITELLM_MASTER_KEY=sk-master-token" >> .env
           echo "GEMINI_API_KEY=mock-key" >> .env
-          echo "DATABASE_URL=postgresql://user:pass@postgres:5432/litellm" >> .env
+          echo "DATABASE_URL=postgresql://user:litellm123@postgres:5432/litellm" >> .env
 
       - name: Start Infrastructure
-        run: docker-compose up -d
+        run: docker compose up -d
+
+      - name: Debug Containers
+        run: |
+          docker compose ps
+          docker compose logs
 
       - name: Run Functional Tests
         run: ./tests/functional_check.sh
 
-      - name: Check Container Logs on Failure
-        if: failure()
-        run: docker-compose logs
-
       - name: Cleanup
         if: always()
-        run: docker-compose down
+        run: docker compose down

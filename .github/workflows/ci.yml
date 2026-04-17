@@ -1,0 +1,33 @@
+name: CI Functional Tests
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Create .env file
+        run: |
+          echo "LITELLM_MASTER_KEY=sk-master-token" >> .env
+          echo "GEMINI_API_KEY=mock-key" >> .env
+          echo "DATABASE_URL=postgresql://user:pass@postgres:5432/litellm" >> .env
+
+      - name: Start Infrastructure
+        run: docker-compose up -d
+
+      - name: Run Functional Tests
+        run: ./tests/functional_check.sh
+
+      - name: Check Container Logs on Failure
+        if: failure()
+        run: docker-compose logs
+
+      - name: Cleanup
+        if: always()
+        run: docker-compose down

@@ -19,6 +19,10 @@ litellm_settings:
   failure_callback: ["postgres"]
   callbacks: ["custom_callbacks.presidio_handler"]
   
+  master_key: os.environ/LITELLM_MASTER_KEY
+  store_model_in_db: true # Required for virtual keys
+  proxy_budget_resilient: true
+  
   cache: true
   cache_params:
     type: "redis-semantic"

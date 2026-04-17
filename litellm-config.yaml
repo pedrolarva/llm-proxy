@@ -19,7 +19,7 @@ litellm_settings:
   failure_callback: ["prometheus"]
   # callbacks: ["custom_callbacks.presidio_handler"]
   
-  master_key: os.environ/LITELLM_MASTER_KEY
+  master_key: "sk-master-token"
   store_model_in_db: true # Required for virtual keys
   proxy_budget_resilient: true
   
@@ -30,5 +30,5 @@ litellm_settings:
     port: 6379
 
 general_settings:
-  master_key: os.environ/LITELLM_MASTER_KEY # Deve ser exportada no docker-compose.yml
+  master_key: "sk-master-token"
   database_url: "postgresql://user:litellm123@postgres:5432/litellm"

@@ -1,0 +1,42 @@
+stages:
+  - build
+  - deploy-hml
+  - deploy-prod
+
+variables:
+  DOCKER_IMAGE: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
+
+build:
+  stage: build
+  image: docker:24.0.5
+  services:
+    - docker:24.0.5-dind
+  script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker build -t $DOCKER_IMAGE .
+    - docker push $DOCKER_IMAGE
+
+deploy-hml:
+  stage: deploy-hml
+  image: alpine/helm:3.12.0
+  script:
+    - helm upgrade --install llm-proxy ./charts/llm-proxy 
+      --namespace hml 
+      --set image.repository=$CI_REGISTRY_IMAGE 
+      --set image.tag=$CI_COMMIT_REF_SLUG
+      --values ./charts/llm-proxy/values-hml.yaml
+  only:
+    - develop
+
+deploy-prod:
+  stage: deploy-prod
+  image: alpine/helm:3.12.0
+  script:
+    - helm upgrade --install llm-proxy ./charts/llm-proxy 
+      --namespace prod 
+      --set image.repository=$CI_REGISTRY_IMAGE 
+      --set image.tag=$CI_COMMIT_REF_SLUG
+      --values ./charts/llm-proxy/values-prod.yaml
+  when: manual
+  only:
+    - main

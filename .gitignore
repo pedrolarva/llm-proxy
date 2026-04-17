@@ -1,0 +1,10 @@
+venv/
+venv_litellm/
+__pycache__/
+*.pyc
+*.log
+.env
+proxy.pid
+.DS_Store
+.agent/
+.docker/

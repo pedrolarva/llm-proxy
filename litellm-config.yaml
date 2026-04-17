@@ -1,0 +1,24 @@
+model_list:
+  - model_name: "gemini-3.1-flash"
+    litellm_params:
+      model: gemini/gemini-2.0-flash
+      api_key: os.environ/GEMINI_API_KEY
+  - model_name: "*"
+    litellm_params:
+      model: gemini/gemini-2.0-flash
+      api_key: os.environ/GEMINI_API_KEY
+
+litellm_settings:
+  drop_params: true
+  success_callback: ["postgres", "redis"] # Grava logs no DB
+  failure_callback: ["postgres"]
+  callbacks: ["custom_callbacks.presidio_handler"]
+  
+  cache: true
+  cache_params:
+    type: "redis-semantic"
+    redis_semantic_cache_embedding_model: "openai/text-embedding-3-small"
+
+general_settings:
+  master_key: os.environ/LITELLM_MASTER_KEY # Deve ser exportada no docker-compose.yml
+  database_url: "postgresql://user:password@postgres:5432/litellm"

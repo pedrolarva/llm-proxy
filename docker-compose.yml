@@ -1,0 +1,69 @@
+services:
+  litellm:
+    image: ghcr.io/berriai/litellm:main-latest
+    ports:
+      - "4000:4000"
+    volumes:
+      - ./litellm-config.yaml:/app/config.yaml
+      - ./custom_callbacks.py:/app/custom_callbacks.py
+    command: ["--config", "/app/config.yaml", "--port", "4000"]
+    environment:
+      - DATABASE_URL=postgresql://user:password@postgres:5432/litellm
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - LITELLM_MASTER_KEY=${LITELLM_MASTER_KEY:-sk-master-token}
+      - PRESIDIO_URL=http://presidio-analyzer:3000/analyze
+      - PRESIDIO_ANONYMIZER_URL=http://presidio-anonymizer:3000/anonymize
+      - PYTHONPATH=/app
+    depends_on:
+      - postgres
+      - redis
+      - presidio-analyzer
+      - presidio-anonymizer
+    networks:
+      - llm-proxy-net
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    command: ["redis-server", "--save", "60", "1", "--loglevel", "warning"]
+    networks:
+      - llm-proxy-net
+    volumes:
+      - redis_data:/data
+
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=litellm
+    ports:
+      - "5432:5432"
+    networks:
+      - llm-proxy-net
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  presidio-analyzer:
+    image: mcr.microsoft.com/presidio-analyzer:latest
+    ports:
+      - "3000:3000"
+    networks:
+      - llm-proxy-net
+
+  presidio-anonymizer:
+    image: mcr.microsoft.com/presidio-anonymizer:latest
+    ports:
+      - "3001:3000"
+    networks:
+      - llm-proxy-net
+
+networks:
+  llm-proxy-net:
+
+volumes:
+  redis_data:
+  postgres_data:

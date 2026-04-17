@@ -21,14 +21,11 @@ jobs:
       - name: Start Infrastructure
         run: docker compose up -d
 
-      - name: Debug Containers
+      - name: Wait and Run Tests
+        run: ./tests/functional_check.sh
+
+      - name: Container Logs on Failure
+        if: failure()
         run: |
           docker compose ps
           docker compose logs
-
-      - name: Run Functional Tests
-        run: ./tests/functional_check.sh
-
-      - name: Cleanup
-        if: always()
-        run: docker compose down

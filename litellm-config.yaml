@@ -15,9 +15,9 @@ router_settings:
 
 litellm_settings:
   drop_params: true
-  success_callback: ["postgres", "redis", "prometheus"] # Re-ativando callbacks
+  success_callback: ["postgres", "redis", "prometheus"]
   failure_callback: ["postgres", "prometheus"]
-  callbacks: ["custom_callbacks.presidio_handler"]
+  # callbacks: ["custom_callbacks.presidio_handler"]
   
   master_key: "sk-master-token"
   store_model_in_db: true # Required for virtual keys

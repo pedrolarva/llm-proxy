@@ -27,7 +27,7 @@ def test_config_initialization():
     # Mock environment variables
     os.environ["GEMINI_API_KEY"] = "sk-mock-key"
     os.environ["LITELLM_MASTER_KEY"] = "sk-master-key"
-    os.environ["DATABASE_URL"] = "postgresql://user:pass@localhost:5432/db"
+    os.environ["DATABASE_URL"] = "postgresql://user:password@localhost:5432/db"
     
     if LITELLM_AVAILABLE:
         try:

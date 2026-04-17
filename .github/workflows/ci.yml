@@ -16,7 +16,8 @@ jobs:
         run: |
           echo "LITELLM_MASTER_KEY=sk-master-token" >> .env
           echo "GEMINI_API_KEY=mock-key" >> .env
-          echo "DATABASE_URL=postgresql://user:litellm123@postgres:5432/litellm" >> .env
+          echo "DATABASE_URL=postgresql://user:password@postgres:5432/litellm" >> .env
+          echo "POSTGRES_PASSWORD=password" >> .env
 
       - name: Start Infrastructure
         run: docker compose up -d

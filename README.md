@@ -32,6 +32,29 @@ O proxy subirá por padrão na porta `4000`. Teste o health check e o endpoint p
 curl http://localhost:4000/health/readiness
 ```
 
+## 🛠️ Gerenciamento Corporativo (Management APIs)
+
+Agora o gateway suporta chaves virtuais e orçamentos por Squad.
+
+### 1. Gerar uma Chave para uma Squad
+```bash
+curl -X POST 'http://localhost:4000/key/generate' \
+-H 'Authorization: Bearer sk-master-token' \
+-H 'Content-Type: application/json' \
+-D '{
+  "models": ["gemini-enterprise"],
+  "metadata": {"squad": "data-science"},
+  "max_budget": 50.0,
+  "budget_duration": "30d"
+}'
+```
+
+### 2. Monitoramento (Prometheus)
+As métricas estão disponíveis nativamente no endpoint:
+`http://localhost:4000/metrics`
+
+---
+
 ## 🛠️ Como usar com o `gemini-cli`
 Para os desenvolvedores locais, basta rodar o script `start-client.sh` no repositório. Ele abstrai o redirecionamento TLS/SSL e aponta o tráfego do Node.js/Google SDK para o Proxy local:
 ```bash
